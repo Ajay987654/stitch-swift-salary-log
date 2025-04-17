@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 
 type AuthContextType = {
   session: Session | null;
@@ -38,6 +39,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setIsLoading(false);
+
+        // Handle authentication events
+        if (event === 'SIGNED_IN') {
+          toast.success("Logged in successfully!");
+          navigate('/');
+        } else if (event === 'SIGNED_OUT') {
+          toast.success("Logged out successfully!");
+          navigate('/auth');
+        }
       }
     );
 
@@ -51,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   // Redirect logic - handle protected and public routes
   useEffect(() => {
@@ -71,8 +81,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [user, location.pathname, isLoading, navigate]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/auth");
+    try {
+      await supabase.auth.signOut();
+      // Navigation and toast are now handled in onAuthStateChange
+    } catch (error) {
+      toast.error("Failed to log out");
+      console.error("Logout error:", error);
+    }
   };
 
   const value = {
