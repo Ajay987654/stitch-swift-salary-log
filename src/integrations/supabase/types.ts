@@ -9,118 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      issues: {
-        Row: {
-          category: string
-          created_at: string | null
-          description: string
-          id: string
-          images: string[] | null
-          location_address: string
-          location_lat: number
-          location_lng: number
-          status: string
-          title: string
-          user_id: string
-          votes: number | null
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          description: string
-          id?: string
-          images?: string[] | null
-          location_address: string
-          location_lat: number
-          location_lng: number
-          status?: string
-          title: string
-          user_id: string
-          votes?: number | null
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          description?: string
-          id?: string
-          images?: string[] | null
-          location_address?: string
-          location_lat?: number
-          location_lng?: number
-          status?: string
-          title?: string
-          user_id?: string
-          votes?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "issues_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      users: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: string
-          name: string
-          role: string
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id?: string
-          name: string
-          role?: string
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: string
-          name?: string
-          role?: string
-        }
+      tailor: {
+        Row: {}
+        Insert: {}
+        Update: {}
         Relationships: []
       }
-      votes: {
+      work_entries: {
         Row: {
-          created_at: string | null
-          id: string
-          issue_id: string
-          user_id: string
+          created_at: string
+          id: number
+          pieces: number
+          rate: number
+          session: string
+          timestamp: string
+          total: number
         }
         Insert: {
-          created_at?: string | null
-          id?: string
-          issue_id: string
-          user_id: string
+          created_at?: string
+          id?: number
+          pieces?: number
+          rate?: number
+          session?: string
+          timestamp?: string
+          total?: number
         }
         Update: {
-          created_at?: string | null
-          id?: string
-          issue_id?: string
-          user_id?: string
+          created_at?: string
+          id?: number
+          pieces?: number
+          rate?: number
+          session?: string
+          timestamp?: string
+          total?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "votes_issue_id_fkey"
-            columns: ["issue_id"]
-            isOneToOne: false
-            referencedRelation: "issues"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "votes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
