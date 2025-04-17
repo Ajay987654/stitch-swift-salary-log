@@ -7,6 +7,7 @@ export interface WorkEntry {
   session: 'Morning' | 'Evening';
   createdAt: string;
   date: string; // YYYY-MM-DD format for easy grouping
+  userId?: string; // User ID from Supabase Auth
 }
 
 export interface DailySummary {

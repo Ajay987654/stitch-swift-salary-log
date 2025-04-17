@@ -11,9 +11,10 @@ import { SunIcon, MoonIcon } from "lucide-react";
 
 interface WorkEntryFormProps {
   onSave: (entry: WorkEntry) => void;
+  userId?: string;
 }
 
-export function WorkEntryForm({ onSave }: WorkEntryFormProps) {
+export function WorkEntryForm({ onSave, userId }: WorkEntryFormProps) {
   const [pieces, setPieces] = useState<number>(0);
   const [ratePerPiece, setRatePerPiece] = useState<number>(0);
   const [session, setSession] = useState<'Morning' | 'Evening'>('Morning');
@@ -36,7 +37,8 @@ export function WorkEntryForm({ onSave }: WorkEntryFormProps) {
       total: calculateTotal(),
       session,
       createdAt: now.toISOString(),
-      date: format(now, 'yyyy-MM-dd')
+      date: format(now, 'yyyy-MM-dd'),
+      userId
     };
     
     onSave(entry);

@@ -9,13 +9,16 @@ import { DailySummary } from "@/components/DailySummary";
 import { WorkEntry, DailySummary as DailySummaryType } from "@/types";
 import { workEntryService } from "@/services/workEntryService";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ListIcon, BarChartIcon } from "lucide-react";
+import { ListIcon, BarChartIcon, LogOut } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
+import { toast } from "sonner";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("log");
   const [entries, setEntries] = useState<WorkEntry[]>([]);
   const [summaries, setSummaries] = useState<DailySummaryType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { user, signOut } = useAuth();
   
   // Function to load all data
   const loadData = async () => {
@@ -33,6 +36,7 @@ const Index = () => {
       setSummaries(allSummaries);
     } catch (error) {
       console.error("Error loading data:", error);
+      toast.error("Failed to load your work entries");
     } finally {
       setIsLoading(false);
     }
@@ -49,8 +53,20 @@ const Index = () => {
       await workEntryService.saveEntry(entry);
       // Reload data to reflect changes
       loadData();
+      toast.success("Work entry saved successfully!");
     } catch (error) {
       console.error("Error saving entry:", error);
+      toast.error("Failed to save work entry");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to log out");
     }
   };
   
@@ -58,7 +74,18 @@ const Index = () => {
     <div className="min-h-screen bg-tailor-background pb-10">
       <header className="bg-tailor-purple text-white py-4 shadow-md mb-6">
         <div className="container px-4 mx-auto">
-          <h1 className="text-2xl font-bold text-center">Tailor Work Tracker</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-center">Tailor Work Tracker</h1>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="text-white hover:bg-tailor-purpleDark"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
       
@@ -76,7 +103,7 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="log" className="space-y-6">
-            <WorkEntryForm onSave={handleSaveEntry} />
+            <WorkEntryForm onSave={handleSaveEntry} userId={user?.id} />
             <WorkEntryList entries={entries} />
           </TabsContent>
           
